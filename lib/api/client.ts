@@ -21,9 +21,16 @@ function buildUrl(endpoint: string, params?: RequestOptions["params"]): string {
   return url.toString();
 }
 
-function getAuthToken(): string | null {
+function getAuthToken(endpoint: string): string | null {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem("auth_token");
+
+  // Admin endpoints only ever use the staff token and customer endpoints only
+  // use the customer token, keeping the two sessions fully isolated.
+  const storageKey = endpoint.startsWith("/admin")
+    ? "admin_token"
+    : "auth_token";
+
+  return localStorage.getItem(storageKey);
 }
 
 async function request<T>(
@@ -41,7 +48,7 @@ async function request<T>(
     headers["Content-Type"] = "application/json";
   }
 
-  const token = getAuthToken();
+  const token = getAuthToken(endpoint);
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }

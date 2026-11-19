@@ -2,14 +2,13 @@
 
 import { create } from "zustand";
 import type { User } from "@/features/auth/types/auth.types";
+import {
+  removeTokenCookie,
+  setTokenCookie,
+} from "@/lib/auth/token-cookie";
 
-function setTokenCookie(token: string) {
-  document.cookie = `auth_token=${token}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`;
-}
-
-function removeTokenCookie() {
-  document.cookie = "auth_token=; path=/; max-age=0";
-}
+const AUTH_TOKEN_KEY = "auth_token";
+const AUTH_COOKIE_NAME = "auth_token";
 
 interface AuthState {
   user: User | null;
@@ -22,18 +21,22 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  token: typeof window !== "undefined" ? localStorage.getItem("auth_token") : null,
-  isAuthenticated: typeof window !== "undefined" ? !!localStorage.getItem("auth_token") : false,
+  token:
+    typeof window !== "undefined"
+      ? localStorage.getItem(AUTH_TOKEN_KEY)
+      : null,
+  isAuthenticated:
+    typeof window !== "undefined" ? !!localStorage.getItem(AUTH_TOKEN_KEY) : false,
 
   setAuth: (user, token) => {
-    localStorage.setItem("auth_token", token);
-    setTokenCookie(token);
+    localStorage.setItem(AUTH_TOKEN_KEY, token);
+    setTokenCookie(AUTH_COOKIE_NAME, token);
     set({ user, token, isAuthenticated: true });
   },
 
   clearAuth: () => {
-    localStorage.removeItem("auth_token");
-    removeTokenCookie();
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    removeTokenCookie(AUTH_COOKIE_NAME);
     set({ user: null, token: null, isAuthenticated: false });
   },
 
