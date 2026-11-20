@@ -10,6 +10,7 @@ import {
   Palette,
   Ruler,
   ShieldCheck,
+  Shirt,
   User,
   Users,
 } from "lucide-react";
@@ -29,6 +30,12 @@ const navItems = [
     label: "Dashboard",
     icon: LayoutDashboard,
     permissions: ["dashboard.view", "reports.view"],
+  },
+  {
+    href: "/admin/products",
+    label: "Products",
+    icon: Shirt,
+    permissions: ["products.view"],
   },
   {
     href: "/admin/categories",

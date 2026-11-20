@@ -54,7 +54,7 @@ export function StorefrontHeader({
           aria-label="Categories"
         >
           <Link
-            href="/categories"
+            href="/products"
             className="py-2 font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Shop all
@@ -116,7 +116,7 @@ export function StorefrontHeader({
             aria-label="Mobile categories"
           >
             <Link
-              href="/categories"
+              href="/products"
               className="block py-2 text-sm font-medium"
               onClick={() => setOpenPath(null)}
             >
