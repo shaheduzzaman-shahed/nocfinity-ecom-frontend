@@ -5,6 +5,7 @@ import { Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/format";
+import { useCartStore } from "@/stores/cart.store";
 import { cn } from "cn";
 import type {
   ProductColorData,
@@ -45,6 +46,7 @@ export function ProductPurchasePanel({
     initialVariant?.size?.id ?? null
   );
   const [quantity, setQuantity] = useState(1);
+  const addItem = useCartStore((state) => state.addItem);
 
   const selectedVariant =
     variants.find(
@@ -287,9 +289,12 @@ export function ProductPurchasePanel({
           className="h-11 flex-1 rounded-full"
           disabled={!canAddToCart}
           onClick={() => {
-            if (!canAddToCart) return;
+            if (!canAddToCart || !selectedVariant) return;
 
-            toast.info("The shopping bag is coming in the next step.");
+            addItem(selectedVariant.id, displayQuantity);
+            toast.success(
+              `Added ${displayQuantity} item${displayQuantity > 1 ? "s" : ""} to your bag`
+            );
           }}
         >
           {buttonLabel}
