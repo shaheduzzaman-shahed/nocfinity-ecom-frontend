@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  FolderTree,
   LayoutDashboard,
   LogOut,
   ShieldCheck,
@@ -26,6 +27,12 @@ const navItems = [
     label: "Dashboard",
     icon: LayoutDashboard,
     permissions: ["dashboard.view", "reports.view"],
+  },
+  {
+    href: "/admin/categories",
+    label: "Categories",
+    icon: FolderTree,
+    permissions: ["categories.view"],
   },
   {
     href: "/admin/roles",
