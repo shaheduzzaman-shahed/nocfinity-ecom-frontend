@@ -61,11 +61,25 @@ export interface ProductDetailData extends ProductCardData {
   related_products: ProductCardData[];
 }
 
+export interface PublicColorData {
+  id: number;
+  name: string;
+  hex_code: string | null;
+}
+
+export interface PublicSizeData {
+  id: number;
+  name: string;
+  sort_order: number;
+}
+
 export interface ProductListParams {
   page?: number;
   per_page?: number;
   search?: string;
   category_id?: number;
+  color_id?: number | string;
+  size_id?: number | string;
   min_price?: number;
   max_price?: number;
   availability?: "in_stock" | "out_of_stock";

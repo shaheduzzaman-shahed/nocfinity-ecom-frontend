@@ -9,6 +9,8 @@ import type {
   ProductCardData,
   ProductDetailData,
   ProductListParams,
+  PublicColorData,
+  PublicSizeData,
 } from "../types/product.types";
 
 function buildQuery(params: ProductListParams): string {
@@ -62,3 +64,19 @@ export const getFeaturedProducts = cache(
     return response?.data ?? [];
   }
 );
+
+export const getColors = cache(async (): Promise<PublicColorData[]> => {
+  const response = await serverGet<ApiSuccessResponse<PublicColorData[]>>(
+    "/colors"
+  );
+
+  return response?.data ?? [];
+});
+
+export const getSizes = cache(async (): Promise<PublicSizeData[]> => {
+  const response = await serverGet<ApiSuccessResponse<PublicSizeData[]>>(
+    "/sizes"
+  );
+
+  return response?.data ?? [];
+});
