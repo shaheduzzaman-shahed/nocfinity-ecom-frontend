@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  Coins,
   FolderTree,
   LayoutDashboard,
   LogOut,
@@ -12,6 +13,7 @@ import {
   ShieldCheck,
   Shirt,
   TicketPercent,
+  Truck,
   User,
   Users,
 } from "lucide-react";
@@ -61,6 +63,18 @@ const navItems = [
     label: "Coupons",
     icon: TicketPercent,
     permissions: ["coupons.view"],
+  },
+  {
+    href: "/admin/settings/shipping",
+    label: "Shipping",
+    icon: Truck,
+    permissions: ["shipping.view"],
+  },
+  {
+    href: "/admin/settings/currency",
+    label: "Currency",
+    icon: Coins,
+    permissions: ["currency.view"],
   },
   {
     href: "/admin/roles",
