@@ -110,3 +110,17 @@ export function useUpdateAdminPassword() {
     },
   });
 }
+
+/**
+ * Resolve the signed-in staff member's effective permissions, falling back to
+ * the permissions stored at login while the profile request is in flight.
+ */
+export function useAdminPermissions() {
+  const storedPermissions = useAdminAuthStore((state) => state.permissions);
+  const profileQuery = useAdminProfile();
+
+  return {
+    permissions: profileQuery.data?.permissions ?? storedPermissions,
+    isLoading: profileQuery.isLoading && storedPermissions.length === 0,
+  };
+}
