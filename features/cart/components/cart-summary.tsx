@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -32,6 +32,12 @@ export function CartSummary({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const applyCouponMutation = useApplyCoupon();
   const removeCouponMutation = useRemoveCoupon();
 
@@ -175,7 +181,7 @@ export function CartSummary({
               </p>
             )}
 
-            {!isAuthenticated && (
+            {mounted && !isAuthenticated && (
               <p className="text-[11px] text-muted-foreground pl-1">
                 <Link
                   href="/login?redirect=/cart"

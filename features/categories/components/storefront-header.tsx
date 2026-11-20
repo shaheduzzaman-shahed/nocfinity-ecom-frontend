@@ -46,6 +46,8 @@ export function StorefrontHeader({
     setSearchOpen(false);
   }, [pathname]);
 
+  const isAuth = mounted && isAuthenticated;
+  const activeUser = mounted ? user : null;
   const itemCount = mounted ? totalQuantity : 0;
 
   function handleSearchSubmit(e: React.FormEvent) {
@@ -164,9 +166,9 @@ export function StorefrontHeader({
 
           {/* Customer login / account link */}
           <Link
-            href={isAuthenticated ? "/account" : "/login"}
-            aria-label={isAuthenticated ? "Customer Account" : "Sign In"}
-            title={isAuthenticated ? user?.name || "Account" : "Sign In"}
+            href={isAuth ? "/account" : "/login"}
+            aria-label={isAuth ? "Customer Account" : "Sign In"}
+            title={isAuth ? activeUser?.name || "Account" : "Sign In"}
             className="inline-flex size-9 items-center justify-center rounded-full transition-colors hover:bg-muted"
           >
             <User className="h-5 w-5" />
@@ -274,12 +276,12 @@ export function StorefrontHeader({
 
               <div className="border-t pt-4">
                 <Link
-                  href={isAuthenticated ? "/account" : "/login"}
+                  href={isAuth ? "/account" : "/login"}
                   className="flex items-center gap-2 py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
                   onClick={() => setMobileOpen(false)}
                 >
                   <User className="h-4 w-4" />
-                  {isAuthenticated ? "My Account" : "Sign In / Register"}
+                  {isAuth ? "My Account" : "Sign In / Register"}
                 </Link>
                 <Link
                   href="/cart"
