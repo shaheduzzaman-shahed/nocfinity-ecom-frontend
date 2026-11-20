@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  Activity,
   Coins,
   FolderTree,
   LayoutDashboard,
@@ -114,6 +115,12 @@ const navItems = [
     label: "Staff",
     icon: UserCog,
     permissions: ["staff.manage"],
+  },
+  {
+    href: "/admin/activity-logs",
+    label: "Activity Logs",
+    icon: Activity,
+    permissions: ["activity_logs.view"],
   },
   {
     href: "/admin/profile",
