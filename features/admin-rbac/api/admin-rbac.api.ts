@@ -4,7 +4,9 @@ import type {
   AdminPermission,
   AdminRole,
   AdminStaffMember,
+  CreateStaffPayload,
   RolePayload,
+  UpdateStaffPayload,
 } from "../types/admin-rbac.types";
 
 export const adminRbacApi = {
@@ -37,6 +39,32 @@ export const adminRbacApi = {
 
   listStaff() {
     return api.get<ApiSuccessResponse<AdminStaffMember[]>>("/admin/staff");
+  },
+
+  getStaff(staffId: number) {
+    return api.get<ApiSuccessResponse<AdminStaffMember>>(`/admin/staff/${staffId}`);
+  },
+
+  createStaff(payload: CreateStaffPayload) {
+    return api.post<ApiSuccessResponse<AdminStaffMember>>("/admin/staff", payload);
+  },
+
+  updateStaff(staffId: number, payload: UpdateStaffPayload) {
+    return api.put<ApiSuccessResponse<AdminStaffMember>>(
+      `/admin/staff/${staffId}`,
+      payload
+    );
+  },
+
+  toggleStaffStatus(staffId: number, is_active: boolean) {
+    return api.patch<ApiSuccessResponse<AdminStaffMember>>(
+      `/admin/staff/${staffId}/status`,
+      { is_active }
+    );
+  },
+
+  deleteStaff(staffId: number) {
+    return api.delete<ApiSuccessResponse<null>>(`/admin/staff/${staffId}`);
   },
 
   updateStaffRoles(staffId: number, roles: string[]) {

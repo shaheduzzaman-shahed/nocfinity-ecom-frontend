@@ -21,9 +21,28 @@ export interface AdminStaffMember {
   id: number;
   name: string;
   email: string;
+  phone?: string | null;
   is_active: boolean;
   roles: string[];
   created_at: string | null;
+}
+
+export interface CreateStaffPayload {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string | null;
+  roles?: string[];
+  is_active?: boolean;
+}
+
+export interface UpdateStaffPayload {
+  name?: string;
+  email?: string;
+  password?: string;
+  phone?: string | null;
+  roles?: string[];
+  is_active?: boolean;
 }
 
 export interface RolePayload {
