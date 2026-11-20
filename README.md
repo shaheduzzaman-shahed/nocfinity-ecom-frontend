@@ -60,7 +60,7 @@ frontend/
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd frontend
+   cd nocfinity-ecom-frontend
    ```
 2. **Install dependencies**
    ```bash
