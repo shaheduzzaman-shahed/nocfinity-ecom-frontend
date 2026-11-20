@@ -10,6 +10,8 @@ import {
   categoryHref,
   findCategoryPath,
 } from "@/features/categories/lib/category-utils";
+import { getProducts } from "@/features/products/api/products.api";
+import { ProductGrid } from "@/features/products/components/product-grid";
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>;
@@ -46,6 +48,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const category = path[path.length - 1];
   const parent = path.length > 1 ? path[path.length - 2] : null;
   const children = category.children ?? [];
+  const { products, meta } = await getProducts({
+    category_id: category.id,
+    per_page: 12,
+  });
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
@@ -106,7 +112,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         </div>
       </section>
 
-      {children.length > 0 ? (
+      {children.length > 0 && (
         <section className="mt-14">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2 className="font-heading text-2xl font-bold tracking-tight sm:text-3xl">
@@ -127,7 +133,40 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             ))}
           </div>
         </section>
-      ) : (
+      )}
+
+      {products.length > 0 && (
+        <section className="mt-14">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
+                The edit
+              </p>
+              <h2 className="mt-2 font-heading text-2xl font-bold tracking-tight sm:text-3xl">
+                Shop {category.name}
+              </h2>
+            </div>
+            <div className="flex items-center gap-4 text-sm">
+              {meta && (
+                <span className="text-muted-foreground">
+                  {meta.total} {meta.total === 1 ? "piece" : "pieces"}
+                </span>
+              )}
+              <Link
+                href={`/products?category_id=${category.id}`}
+                className="font-medium underline-offset-4 hover:underline"
+              >
+                View all
+              </Link>
+            </div>
+          </div>
+          <div className="mt-8">
+            <ProductGrid products={products} />
+          </div>
+        </section>
+      )}
+
+      {children.length === 0 && products.length === 0 && (
         <section className="mt-14 rounded-[1.75rem] border border-dashed p-12 text-center">
           <p className="font-heading text-2xl font-semibold">
             Pieces are on the way

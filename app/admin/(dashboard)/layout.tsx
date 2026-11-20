@@ -4,12 +4,18 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  Coins,
   FolderTree,
   LayoutDashboard,
   LogOut,
+  Package,
   Palette,
   Ruler,
   ShieldCheck,
+  Shirt,
+  Star,
+  TicketPercent,
+  Truck,
   User,
   Users,
 } from "lucide-react";
@@ -31,6 +37,24 @@ const navItems = [
     permissions: ["dashboard.view", "reports.view"],
   },
   {
+    href: "/admin/orders",
+    label: "Orders",
+    icon: Package,
+    permissions: ["orders.view"],
+  },
+  {
+    href: "/admin/products",
+    label: "Products",
+    icon: Shirt,
+    permissions: ["products.view"],
+  },
+  {
+    href: "/admin/reviews",
+    label: "Reviews",
+    icon: Star,
+    permissions: ["reviews.view"],
+  },
+  {
     href: "/admin/categories",
     label: "Categories",
     icon: FolderTree,
@@ -47,6 +71,24 @@ const navItems = [
     label: "Sizes",
     icon: Ruler,
     permissions: ["products.view"],
+  },
+  {
+    href: "/admin/coupons",
+    label: "Coupons",
+    icon: TicketPercent,
+    permissions: ["coupons.view"],
+  },
+  {
+    href: "/admin/settings/shipping",
+    label: "Shipping",
+    icon: Truck,
+    permissions: ["shipping.view"],
+  },
+  {
+    href: "/admin/settings/currency",
+    label: "Currency",
+    icon: Coins,
+    permissions: ["currency.view"],
   },
   {
     href: "/admin/roles",

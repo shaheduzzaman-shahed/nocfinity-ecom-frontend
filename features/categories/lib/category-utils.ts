@@ -36,3 +36,22 @@ export function countCategories(categories: StorefrontCategory[]): number {
     0
   );
 }
+
+export function findCategoryById(
+  categories: StorefrontCategory[],
+  categoryId: number
+): StorefrontCategory | null {
+  for (const category of categories) {
+    if (category.id === categoryId) {
+      return category;
+    }
+
+    const match = findCategoryById(category.children ?? [], categoryId);
+
+    if (match) {
+      return match;
+    }
+  }
+
+  return null;
+}
