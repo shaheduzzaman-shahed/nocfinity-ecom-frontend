@@ -6,11 +6,14 @@ import { useRouter, usePathname } from "next/navigation";
 import {
   ChevronDown,
   Menu,
+  Moon,
   Search,
   ShoppingBag,
+  Sun,
   User,
   X,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import type { StorefrontCategory } from "../types/category.types";
 import { useAuthStore } from "@/stores/auth.store";
 import { useCart } from "@/features/cart/hooks/use-cart";
@@ -34,6 +37,7 @@ export function StorefrontHeader({
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const { totalQuantity } = useCart();
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -162,6 +166,19 @@ export function StorefrontHeader({
             aria-label="Search products"
           >
             <Search className="h-5 w-5" />
+          </button>
+
+          {/* Theme toggle */}
+          <button
+            type="button"
+            onClick={() =>
+              setTheme(resolvedTheme === "dark" ? "light" : "dark")
+            }
+            className="relative inline-flex size-9 items-center justify-center rounded-full transition-colors hover:bg-muted"
+            aria-label="Toggle theme"
+          >
+            <Sun className="h-5 w-5 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
           </button>
 
           {/* Customer login / account link */}
