@@ -8,6 +8,7 @@ import {
   FolderTree,
   LayoutDashboard,
   LogOut,
+  Package,
   Palette,
   Ruler,
   ShieldCheck,
@@ -33,6 +34,12 @@ const navItems = [
     label: "Dashboard",
     icon: LayoutDashboard,
     permissions: ["dashboard.view", "reports.view"],
+  },
+  {
+    href: "/admin/orders",
+    label: "Orders",
+    icon: Package,
+    permissions: ["orders.view"],
   },
   {
     href: "/admin/products",
