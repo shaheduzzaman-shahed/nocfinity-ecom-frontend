@@ -5,7 +5,7 @@ import { Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/format";
-import { useCartStore } from "@/stores/cart.store";
+import { useAddToCart } from "@/features/cart/hooks/use-cart";
 import { cn } from "cn";
 import type {
   ProductColorData,
@@ -46,7 +46,7 @@ export function ProductPurchasePanel({
     initialVariant?.size?.id ?? null
   );
   const [quantity, setQuantity] = useState(1);
-  const addItem = useCartStore((state) => state.addItem);
+  const addToCartMutation = useAddToCart();
 
   const selectedVariant =
     variants.find(
@@ -287,17 +287,30 @@ export function ProductPurchasePanel({
           type="button"
           size="lg"
           className="h-11 flex-1 rounded-full"
-          disabled={!canAddToCart}
+          disabled={!canAddToCart || addToCartMutation.isPending}
           onClick={() => {
             if (!canAddToCart || !selectedVariant) return;
 
-            addItem(selectedVariant.id, displayQuantity);
-            toast.success(
-              `Added ${displayQuantity} item${displayQuantity > 1 ? "s" : ""} to your bag`
-            );
+            addToCartMutation.mutate({
+              variantId: selectedVariant.id,
+              quantity: displayQuantity,
+              metadata: {
+                product_id: product.id,
+                product_name: product.name,
+                product_slug: product.slug,
+                primary_image: product.primary_image,
+                sku: selectedVariant.sku,
+                color_name: selectedColor?.name,
+                color_hex: selectedColor?.hex_code,
+                size_name: sizes.find((s) => s.id === sizeId)?.name,
+                unit_price: price,
+                regular_price: product.regular_price,
+                stock: stock,
+              },
+            });
           }}
         >
-          {buttonLabel}
+          {addToCartMutation.isPending ? "Adding..." : buttonLabel}
         </Button>
       </div>
 

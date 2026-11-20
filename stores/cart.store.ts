@@ -1,26 +1,23 @@
 "use client";
 
 import { create } from "zustand";
+import type { GuestCartItem } from "@/features/cart/types/cart.types";
 
 const CART_STORAGE_KEY = "nocfinity_guest_cart";
 
-export interface LocalCartItem {
-  productVariantId: number;
-  quantity: number;
-}
-
-interface CartState {
-  items: LocalCartItem[];
+interface CartStoreState {
+  guestItems: GuestCartItem[];
   isHydrated: boolean;
-  addItem: (productVariantId: number, quantity?: number) => void;
-  updateQuantity: (productVariantId: number, quantity: number) => void;
-  removeItem: (productVariantId: number) => void;
-  clearCart: () => void;
   hydrate: () => void;
-  totalItems: () => number;
+  addGuestItem: (item: GuestCartItem) => void;
+  updateGuestQuantity: (variantId: number, quantity: number) => void;
+  removeGuestItem: (variantId: number) => void;
+  clearGuestCart: () => void;
+  totalGuestQuantity: () => number;
+  getGuestMergePayload: () => Array<{ product_variant_id: number; quantity: number }>;
 }
 
-function loadInitialItems(): LocalCartItem[] {
+function loadInitialItems(): GuestCartItem[] {
   if (typeof window === "undefined") {
     return [];
   }
@@ -31,89 +28,100 @@ function loadInitialItems(): LocalCartItem[] {
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed)) {
       return parsed.filter(
-        (item): item is LocalCartItem =>
-          typeof item?.productVariantId === "number" &&
+        (item): item is GuestCartItem =>
+          typeof item?.product_variant_id === "number" &&
           typeof item?.quantity === "number" &&
           item.quantity > 0
       );
     }
   } catch {
-    // ignore JSON parse errors
+    // ignore parse error
   }
 
   return [];
 }
 
-function saveItems(items: LocalCartItem[]) {
+function saveItems(items: GuestCartItem[]) {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   } catch {
-    // ignore storage write errors
+    // ignore write error
   }
 }
 
-export const useCartStore = create<CartState>((set, get) => ({
-  items: [],
+export const useCartStore = create<CartStoreState>((set, get) => ({
+  guestItems: [],
   isHydrated: false,
 
   hydrate: () => {
     if (get().isHydrated) return;
-    const items = loadInitialItems();
-    set({ items, isHydrated: true });
+    const guestItems = loadInitialItems();
+    set({ guestItems, isHydrated: true });
   },
 
-  addItem: (productVariantId: number, quantity = 1) => {
-    const current = get().items;
+  addGuestItem: (incoming: GuestCartItem) => {
+    const current = get().guestItems;
     const existingIndex = current.findIndex(
-      (item) => item.productVariantId === productVariantId
+      (item) => item.product_variant_id === incoming.product_variant_id
     );
 
-    let nextItems: LocalCartItem[];
+    let nextItems: GuestCartItem[];
     if (existingIndex > -1) {
+      const existing = current[existingIndex];
+      const maxStock = incoming.stock ?? existing.stock ?? 9999;
+      const newQty = Math.min(existing.quantity + incoming.quantity, maxStock);
+
       nextItems = current.map((item, index) =>
         index === existingIndex
-          ? { ...item, quantity: item.quantity + quantity }
+          ? { ...item, ...incoming, quantity: newQty }
           : item
       );
     } else {
-      nextItems = [...current, { productVariantId, quantity }];
+      nextItems = [...current, incoming];
     }
 
     saveItems(nextItems);
-    set({ items: nextItems });
+    set({ guestItems: nextItems });
   },
 
-  updateQuantity: (productVariantId: number, quantity: number) => {
+  updateGuestQuantity: (variantId: number, quantity: number) => {
     if (quantity <= 0) {
-      get().removeItem(productVariantId);
+      get().removeGuestItem(variantId);
       return;
     }
 
-    const nextItems = get().items.map((item) =>
-      item.productVariantId === productVariantId
-        ? { ...item, quantity }
+    const nextItems = get().guestItems.map((item) =>
+      item.product_variant_id === variantId
+        ? { ...item, quantity: Math.min(quantity, item.stock ?? quantity) }
         : item
     );
 
     saveItems(nextItems);
-    set({ items: nextItems });
+    set({ guestItems: nextItems });
   },
 
-  removeItem: (productVariantId: number) => {
-    const nextItems = get().items.filter(
-      (item) => item.productVariantId !== productVariantId
+  removeGuestItem: (variantId: number) => {
+    const nextItems = get().guestItems.filter(
+      (item) => item.product_variant_id !== variantId
     );
     saveItems(nextItems);
-    set({ items: nextItems });
+    set({ guestItems: nextItems });
   },
 
-  clearCart: () => {
+  clearGuestCart: () => {
     saveItems([]);
-    set({ items: [] });
+    set({ guestItems: [] });
   },
 
-  totalItems: () => {
-    return get().items.reduce((total, item) => total + item.quantity, 0);
+  totalGuestQuantity: () => {
+    return get().guestItems.reduce((total, item) => total + item.quantity, 0);
+  },
+
+  getGuestMergePayload: () => {
+    return get().guestItems.map((item) => ({
+      product_variant_id: item.product_variant_id,
+      quantity: item.quantity,
+    }));
   },
 }));

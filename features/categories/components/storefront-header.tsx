@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import type { StorefrontCategory } from "../types/category.types";
 import { useAuthStore } from "@/stores/auth.store";
-import { useCartStore } from "@/stores/cart.store";
+import { useCart } from "@/features/cart/hooks/use-cart";
 
 function categoryHref(slug: string): string {
   return `/categories/${slug}`;
@@ -33,11 +33,12 @@ export function StorefrontHeader({
   const user = useAuthStore((s) => s.user);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
-  const { isHydrated, hydrate, totalItems } = useCartStore();
+  const { totalQuantity } = useCart();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    hydrate();
-  }, [hydrate]);
+    setMounted(true);
+  }, []);
 
   // Close mobile drawer on route change
   useEffect(() => {
@@ -45,7 +46,7 @@ export function StorefrontHeader({
     setSearchOpen(false);
   }, [pathname]);
 
-  const itemCount = isHydrated ? totalItems() : 0;
+  const itemCount = mounted ? totalQuantity : 0;
 
   function handleSearchSubmit(e: React.FormEvent) {
     e.preventDefault();

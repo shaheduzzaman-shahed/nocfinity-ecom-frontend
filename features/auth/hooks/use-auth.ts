@@ -12,7 +12,24 @@ import type {
   UpdateProfilePayload,
 } from "../types/auth.types";
 import { useAuthStore } from "@/stores/auth.store";
+import { useCartStore } from "@/stores/cart.store";
+import { cartApi } from "@/features/cart/api/cart.api";
 import { ApiError } from "@/lib/api/error";
+
+async function mergeGuestCartIfAny() {
+  const guestItems = useCartStore.getState().getGuestMergePayload();
+  if (guestItems.length > 0) {
+    try {
+      const mergeRes = await cartApi.mergeCart(guestItems);
+      useCartStore.getState().clearGuestCart();
+      if (mergeRes.data?.warnings?.length > 0) {
+        mergeRes.data.warnings.forEach((w) => toast.warning(w));
+      }
+    } catch {
+      // Continue even if merge has minor issues
+    }
+  }
+}
 
 export function useRegister() {
   const router = useRouter();
@@ -20,9 +37,10 @@ export function useRegister() {
 
   return useMutation({
     mutationFn: (payload: RegisterPayload) => authApi.register(payload),
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       setAuth(response.data.user, response.data.token);
       toast.success("Account created successfully!");
+      await mergeGuestCartIfAny();
       router.push("/");
     },
     onError: (error: ApiError) => {
@@ -40,9 +58,10 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: (payload: LoginPayload) => authApi.login(payload),
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       setAuth(response.data.user, response.data.token);
       toast.success("Welcome back!");
+      await mergeGuestCartIfAny();
       const redirect = searchParams.get("redirect");
       router.push(redirect ?? "/");
     },
