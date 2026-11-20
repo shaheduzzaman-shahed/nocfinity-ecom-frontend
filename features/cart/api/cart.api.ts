@@ -31,4 +31,12 @@ export const cartApi = {
   mergeCart(items: MergeCartPayload["items"]) {
     return api.post<ApiSuccessResponse<CartData>>("/cart/merge", { items });
   },
+
+  applyCoupon(code: string) {
+    return api.post<ApiSuccessResponse<CartData>>("/coupons/apply", { code });
+  },
+
+  removeCoupon() {
+    return api.delete<ApiSuccessResponse<CartData>>("/coupons/remove");
+  },
 };

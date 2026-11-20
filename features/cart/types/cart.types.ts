@@ -27,6 +27,14 @@ export interface CartItemData {
   is_sufficient_stock: boolean;
 }
 
+export interface AppliedCouponData {
+  id: number;
+  code: string;
+  type: "percentage" | "fixed";
+  value: number;
+  discount_amount: number;
+}
+
 export interface CartSummaryData {
   subtotal: number;
   product_discount: number;
@@ -41,6 +49,7 @@ export interface CartData {
   items: CartItemData[];
   items_count: number;
   total_quantity: number;
+  coupon?: AppliedCouponData | null;
   summary: CartSummaryData;
   warnings: string[];
 }

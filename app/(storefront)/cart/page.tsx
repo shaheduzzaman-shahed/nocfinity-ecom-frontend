@@ -134,6 +134,7 @@ export default function CartPage() {
             <div className="sticky top-24">
               <CartSummary
                 summary={cart.summary}
+                coupon={cart.coupon}
                 disabled={items.some((i) => !i.in_stock)}
               />
             </div>

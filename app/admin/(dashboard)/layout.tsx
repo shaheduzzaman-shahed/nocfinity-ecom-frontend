@@ -11,6 +11,7 @@ import {
   Ruler,
   ShieldCheck,
   Shirt,
+  TicketPercent,
   User,
   Users,
 } from "lucide-react";
@@ -54,6 +55,12 @@ const navItems = [
     label: "Sizes",
     icon: Ruler,
     permissions: ["products.view"],
+  },
+  {
+    href: "/admin/coupons",
+    label: "Coupons",
+    icon: TicketPercent,
+    permissions: ["coupons.view"],
   },
   {
     href: "/admin/roles",

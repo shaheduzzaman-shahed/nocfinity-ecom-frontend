@@ -241,3 +241,51 @@ export function useClearCart() {
     },
   });
 }
+
+export function useApplyCoupon() {
+  const queryClient = useQueryClient();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+  return useMutation({
+    mutationFn: async (code: string) => {
+      if (!isAuthenticated) {
+        throw new Error("Please sign in to your account to apply coupons.");
+      }
+      const res = await cartApi.applyCoupon(code);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(CART_QUERY_KEY, data);
+      toast.success("Coupon applied successfully!");
+    },
+    onError: (error: ApiError | Error) => {
+      const msg = error instanceof ApiError ? error.message : error.message;
+      toast.error(msg || "Failed to apply coupon.");
+    },
+  });
+}
+
+export function useRemoveCoupon() {
+  const queryClient = useQueryClient();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+  return useMutation({
+    mutationFn: async () => {
+      if (!isAuthenticated) {
+        return null;
+      }
+      const res = await cartApi.removeCoupon();
+      return res.data;
+    },
+    onSuccess: (data) => {
+      if (data) {
+        queryClient.setQueryData(CART_QUERY_KEY, data);
+      }
+      toast.success("Coupon removed.");
+    },
+    onError: (error: ApiError | Error) => {
+      const msg = error instanceof ApiError ? error.message : error.message;
+      toast.error(msg || "Failed to remove coupon.");
+    },
+  });
+}
