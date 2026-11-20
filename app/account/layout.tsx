@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { User, Package, LogOut } from "lucide-react";
+import { User, Package, MapPin, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLogout } from "@/features/auth/hooks/use-auth";
 import { cn } from "cn";
 
 const navItems = [
   { href: "/account/profile", label: "Profile", icon: User },
+  { href: "/account/addresses", label: "Addresses", icon: MapPin },
   { href: "/account/orders", label: "Orders", icon: Package },
 ];
 
