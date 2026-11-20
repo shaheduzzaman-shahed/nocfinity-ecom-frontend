@@ -72,6 +72,7 @@ export interface OrderData {
   coupon_discount: number;
   shipping_charge: number;
   final_total: number;
+  client_secret?: string | null;
   shipping_address: {
     id: number;
     name: string;

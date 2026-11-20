@@ -1,8 +1,17 @@
 "use client";
 
 import { CreditCard, Lock, ShieldCheck } from "lucide-react";
+import { StripeCardElement } from "./stripe-card-element";
 
-export function CheckoutPaymentSection() {
+interface CheckoutPaymentSectionProps {
+  cardError?: string | null;
+  onCardChange?: (complete: boolean) => void;
+}
+
+export function CheckoutPaymentSection({
+  cardError,
+  onCardChange,
+}: CheckoutPaymentSectionProps) {
   return (
     <div className="rounded-3xl border bg-card p-6 shadow-sm sm:p-8 space-y-6">
       <div className="border-b pb-4">
@@ -15,15 +24,15 @@ export function CheckoutPaymentSection() {
               2. Payment Method
             </h2>
             <p className="text-xs text-muted-foreground">
-              All transactions are encrypted and processed securely.
+              All transactions are encrypted and processed securely via Stripe.
             </p>
           </div>
         </div>
       </div>
 
-      <div className="space-y-4">
-        <div className="rounded-2xl border-2 border-primary bg-primary/[0.02] p-5 space-y-3">
-          <div className="flex items-center justify-between">
+      <div className="space-y-5">
+        <div className="rounded-2xl border-2 border-primary bg-primary/[0.02] p-5 space-y-4">
+          <div className="flex items-center justify-between border-b pb-3">
             <div className="flex items-center gap-3">
               <div className="flex size-10 items-center justify-center rounded-xl bg-card border shadow-xs text-primary">
                 <CreditCard className="h-5 w-5" />
@@ -49,17 +58,12 @@ export function CheckoutPaymentSection() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-dashed border-border/80 bg-muted/30 p-3.5 text-xs text-muted-foreground leading-relaxed flex items-start gap-2.5">
-            <Lock className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
-            <span>
-              Order details and authoritative totals are generated on the server.
-              Payment authorization and card entry will be collected securely via Stripe Elements.
-            </span>
-          </div>
+          {/* Real Stripe Card Element */}
+          <StripeCardElement error={cardError} onChange={onCardChange} />
         </div>
 
-        {/* Trust features */}
-        <div className="grid grid-cols-2 gap-3 pt-2 text-[11px] text-muted-foreground">
+        {/* Security Trust Features */}
+        <div className="grid grid-cols-2 gap-3 pt-1 text-[11px] text-muted-foreground">
           <div className="flex items-center gap-2 rounded-xl bg-muted/40 p-2.5">
             <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
             <span>256-Bit SSL Encryption</span>

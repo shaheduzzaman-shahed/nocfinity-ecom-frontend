@@ -242,13 +242,13 @@ export default function OrderConfirmationPage({
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
           <Link
-            href="/account"
+            href="/account/orders"
             className={buttonVariants({
               variant: "outline",
               className: "w-full sm:w-auto rounded-full px-8 h-11",
             })}
           >
-            View Account Profile
+            View My Orders
           </Link>
         </div>
       </div>
