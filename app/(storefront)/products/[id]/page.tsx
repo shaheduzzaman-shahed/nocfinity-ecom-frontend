@@ -8,6 +8,7 @@ import { ProductGrid } from "@/features/products/components/product-grid";
 import { ProductPurchasePanel } from "@/features/products/components/product-purchase-panel";
 import { RatingBreakdown } from "@/features/products/components/rating-breakdown";
 import { RatingStars } from "@/features/products/components/rating-stars";
+import { ProductReviewsSection } from "@/features/reviews/components/product-reviews-section";
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -127,38 +128,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
       </div>
 
-      <section id="reviews" className="mt-16 scroll-mt-24 lg:mt-20">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
-              Community
-            </p>
-            <h2 className="mt-2 font-heading text-2xl font-bold tracking-tight sm:text-3xl">
-              Reviews
-            </h2>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Only approved reviews are shown.
-          </p>
-        </div>
-
-        <div className="mt-6">
-          {product.reviews_count > 0 ? (
-            <RatingBreakdown
-              averageRating={product.average_rating}
-              reviewsCount={product.reviews_count}
-              breakdown={product.rating_breakdown}
-            />
-          ) : (
-            <div className="rounded-2xl border border-dashed p-8 text-center">
-              <p className="font-medium">No reviews yet</p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Be the first to share how this piece fits and feels.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
+      <ProductReviewsSection
+        productId={product.id}
+        productName={product.name}
+      />
 
       {product.related_products.length > 0 && (
         <section className="mt-16 lg:mt-20">

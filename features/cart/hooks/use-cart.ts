@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { cartApi } from "../api/cart.api";
@@ -20,6 +21,10 @@ export function useCart() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const { guestItems, isHydrated, hydrate } = useCartStore();
 
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
+
   const query = useQuery({
     queryKey: CART_QUERY_KEY,
     queryFn: async () => {
@@ -28,6 +33,12 @@ export function useCart() {
     },
     enabled: isAuthenticated,
     staleTime: 1000 * 60,
+    retry: (failureCount, error) => {
+      if (error instanceof ApiError && error.isUnauthorized) {
+        return false;
+      }
+      return failureCount < 2;
+    },
   });
 
   // If not authenticated, compute cart shape from local guest items

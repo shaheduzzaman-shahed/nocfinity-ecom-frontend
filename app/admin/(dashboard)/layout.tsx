@@ -13,6 +13,7 @@ import {
   Ruler,
   ShieldCheck,
   Shirt,
+  Star,
   TicketPercent,
   Truck,
   User,
@@ -46,6 +47,12 @@ const navItems = [
     label: "Products",
     icon: Shirt,
     permissions: ["products.view"],
+  },
+  {
+    href: "/admin/reviews",
+    label: "Reviews",
+    icon: Star,
+    permissions: ["reviews.view"],
   },
   {
     href: "/admin/categories",

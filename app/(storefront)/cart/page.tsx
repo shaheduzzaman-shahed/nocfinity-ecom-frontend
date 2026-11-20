@@ -8,7 +8,7 @@ import { CartSummary } from "@/features/cart/components/cart-summary";
 import { buttonVariants } from "@/components/ui/button";
 
 export default function CartPage() {
-  const { cart, isLoading } = useCart();
+  const { cart, isLoading, isError, error, refetch } = useCart();
   const clearCartMutation = useClearCart();
 
   if (isLoading) {
@@ -22,6 +22,25 @@ export default function CartPage() {
           </div>
           <div className="h-72 bg-muted animate-pulse rounded-3xl" />
         </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
+        <AlertCircle className="mx-auto h-12 w-12 text-destructive" />
+        <h2 className="mt-4 font-heading text-xl font-bold">Failed to load your cart</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {error instanceof Error ? error.message : "Something went wrong while retrieving your cart items."}
+        </p>
+        <button
+          type="button"
+          onClick={() => refetch()}
+          className={buttonVariants({ variant: "outline", className: "mt-6" })}
+        >
+          Try Again
+        </button>
       </div>
     );
   }
