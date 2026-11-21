@@ -146,6 +146,33 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* 6. New Arrivals Section */}
+      {newArrivals.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-end justify-between gap-4 border-b pb-6">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                Just Landed
+              </p>
+              <h2 className="mt-2 font-heading text-3xl font-bold tracking-tight sm:text-4xl">
+                New arrivals
+              </h2>
+            </div>
+            <Link
+              href="/products?sort=newest"
+              className="inline-flex items-center gap-1 text-sm font-medium text-foreground underline-offset-4 hover:underline"
+            >
+              View all new arrivals
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="mt-10">
+            <ProductGrid products={newArrivals} />
+          </div>
+        </section>
+      )}
+
       {/* 3. Featured Categories Section (Slideable) */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <CategorySlider categories={categories} />
@@ -225,32 +252,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 6. New Arrivals Section */}
-      {newArrivals.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-end justify-between gap-4 border-b pb-6">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                Just Landed
-              </p>
-              <h2 className="mt-2 font-heading text-3xl font-bold tracking-tight sm:text-4xl">
-                New arrivals
-              </h2>
-            </div>
-            <Link
-              href="/products?sort=newest"
-              className="inline-flex items-center gap-1 text-sm font-medium text-foreground underline-offset-4 hover:underline"
-            >
-              View all new arrivals
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          <div className="mt-10">
-            <ProductGrid products={newArrivals} />
-          </div>
-        </section>
-      )}
     </div>
   );
 }
