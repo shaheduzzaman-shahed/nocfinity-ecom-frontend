@@ -1,15 +1,22 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { cn } from "cn";
 import { categoryHref } from "../lib/category-utils";
 import type { StorefrontCategory } from "../types/category.types";
 import { CategoryImage } from "./category-image";
 
-export function CategoryCard({ category }: { category: StorefrontCategory }) {
+export function CategoryCard({
+  category,
+  className,
+}: {
+  category: StorefrontCategory;
+  className?: string;
+}) {
   const children = category.children ?? [];
   const href = categoryHref(category);
 
   return (
-    <article>
+    <article className={cn(className)}>
       <Link
         href={href}
         className="group block overflow-hidden rounded-[1.75rem] bg-muted"
