@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowRight,
   RotateCcw,
@@ -7,7 +8,7 @@ import {
   Truck,
 } from "lucide-react";
 import { getCategoryTree } from "@/features/categories/api/categories.api";
-import { CategoryCard } from "@/features/categories/components/category-card";
+import { CategorySlider } from "@/features/categories/components/category-slider";
 import {
   getFeaturedProducts,
   getProducts,
@@ -37,7 +38,7 @@ export default async function HomePage() {
             </div>
 
             <h1 className="font-heading text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
-              Considered pieces for every day.
+              FIND CLOTHES THAT MACH YOUR STYLE.
             </h1>
 
             <p className="max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
@@ -64,18 +65,28 @@ export default async function HomePage() {
           </div>
 
           {/* Hero Visual Card (Desktop 1440px / Mobile 390px responsive) */}
-          <div className="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-square overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-neutral-200 via-neutral-100 to-neutral-300 shadow-xl dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-700">
-            {/* Background design accents */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-100/40 via-transparent to-transparent dark:from-amber-950/20" />
+          <div className="group relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-square overflow-hidden rounded-[2.5rem] bg-neutral-100 shadow-xl dark:bg-neutral-900">
+            {/* Background Image */}
+            <Image
+              src="/images/hero-collection.jpg"
+              alt="Curated Collection Flatlay"
+              fill
+              priority
+              sizes="(min-width: 1024px) 45vw, 100vw"
+              className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+            />
 
-            <div className="absolute inset-0 flex flex-col justify-between p-8 sm:p-10">
+            {/* Subtle overlay gradient for depth and contrast */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent dark:from-black/70 dark:via-black/25" />
+
+            <div className="relative z-10 flex h-full flex-col justify-between p-8 sm:p-10">
               <div className="flex justify-end">
-                <span className="rounded-full bg-background/80 px-4 py-1.5 text-xs font-medium uppercase tracking-widest shadow-sm backdrop-blur">
+                <span className="rounded-full bg-background/85 px-4 py-1.5 text-xs font-medium uppercase tracking-widest shadow-sm backdrop-blur-md">
                   Limited Edition
                 </span>
               </div>
 
-              <div className="space-y-3 rounded-2xl bg-background/70 p-6 backdrop-blur-md dark:bg-background/80">
+              <div className="space-y-3 rounded-2xl bg-background/85 p-6 shadow-lg backdrop-blur-md dark:bg-background/90">
                 <p className="font-heading text-2xl font-bold leading-tight sm:text-3xl text-foreground">
                   Designed to endure,
                   <br />
@@ -135,42 +146,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 3. Featured Categories Section */}
+      {/* 3. Featured Categories Section (Slideable) */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-4 border-b pb-6">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              Collections
-            </p>
-            <h2 className="mt-2 font-heading text-3xl font-bold tracking-tight sm:text-4xl">
-              Shop by category
-            </h2>
-          </div>
-          <Link
-            href="/categories"
-            className="inline-flex items-center gap-1 text-sm font-medium text-foreground underline-offset-4 hover:underline"
-          >
-            All categories
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-
-        {categories.length === 0 ? (
-          <div className="mt-10 rounded-[1.75rem] border border-dashed p-12 text-center">
-            <p className="font-heading text-lg font-semibold">
-              The catalog is being prepared
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Categories will appear here as soon as they are published.
-            </p>
-          </div>
-        ) : (
-          <div className="mt-10 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-            {categories.map((category) => (
-              <CategoryCard key={category.id} category={category} />
-            ))}
-          </div>
-        )}
+        <CategorySlider categories={categories} />
       </section>
 
       {/* 4. Featured Products Section (From /api/v1/featured-products) */}
