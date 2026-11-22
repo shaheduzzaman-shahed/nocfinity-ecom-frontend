@@ -27,7 +27,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "localhost",
+        hostname: "shahed.almaruf67.com",
         pathname: "/**",
       },
       {
