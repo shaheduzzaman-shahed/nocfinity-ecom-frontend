@@ -42,7 +42,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "images.unsplash.com",
+        hostname: "nocfinity-ecom-backend.wasmer.app",
         pathname: "/**",
       },
     ],
