@@ -21,8 +21,12 @@ interface StaffFormDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function StaffFormDialog({
-  open,
+export function StaffFormDialog(props: StaffFormDialogProps) {
+  if (!props.open) return null;
+  return <StaffFormDialogContent key={props.staff?.id ?? "new"} {...props} />;
+}
+
+function StaffFormDialogContent({
   staff,
   currentUserId,
   onOpenChange,
@@ -35,38 +39,14 @@ export function StaffFormDialog({
   const createMutation = useCreateStaff();
   const updateMutation = useUpdateStaff();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [name, setName] = useState(staff?.name ?? "");
+  const [email, setEmail] = useState(staff?.email ?? "");
+  const [phone, setPhone] = useState(staff?.phone || "");
   const [password, setPassword] = useState("");
-  const [isActive, setIsActive] = useState(true);
-  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [isActive, setIsActive] = useState(staff ? staff.is_active : true);
+  const [selectedRoles, setSelectedRoles] = useState<string[]>(staff?.roles ?? []);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
-
-  useEffect(() => {
-    if (open) {
-      if (staff) {
-        setName(staff.name);
-        setEmail(staff.email);
-        setPhone(staff.phone || "");
-        setPassword("");
-        setIsActive(staff.is_active);
-        setSelectedRoles(staff.roles);
-      } else {
-        setName("");
-        setEmail("");
-        setPhone("");
-        setPassword("");
-        setIsActive(true);
-        setSelectedRoles([]);
-      }
-      setValidationError(null);
-      setFieldErrors({});
-    }
-  }, [open, staff]);
-
-  if (!open) return null;
 
   const roles = (rolesQuery.data ?? []).filter((r) => !r.is_system);
   const isPending = createMutation.isPending || updateMutation.isPending;

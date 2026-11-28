@@ -29,26 +29,28 @@ interface AdminReviewDetailDialogProps {
   canDelete?: boolean;
 }
 
-export function AdminReviewDetailDialog({
+export function AdminReviewDetailDialog(props: AdminReviewDetailDialogProps) {
+  if (!props.open || !props.review) return null;
+  return (
+    <AdminReviewDetailDialogContent
+      key={props.review.id}
+      {...props}
+      review={props.review}
+    />
+  );
+}
+
+function AdminReviewDetailDialogContent({
   review,
-  open,
   onOpenChange,
   canModerate = true,
   canDelete = true,
-}: AdminReviewDetailDialogProps) {
+}: AdminReviewDetailDialogProps & { review: AdminReview }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const updateStatusMutation = useUpdateReviewStatus();
   const deleteMutation = useDeleteReview();
 
   useEffect(() => {
-    if (!open) {
-      setConfirmDelete(false);
-    }
-  }, [open]);
-
-  useEffect(() => {
-    if (!open) return;
-
     const onKeyDown = (event: KeyboardEvent) => {
       if (
         event.key === "Escape" &&
@@ -61,9 +63,7 @@ export function AdminReviewDetailDialog({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open, updateStatusMutation.isPending, deleteMutation.isPending, onOpenChange]);
-
-  if (!open || !review) return null;
+  }, [updateStatusMutation.isPending, deleteMutation.isPending, onOpenChange]);
 
   const handleStatusChange = (status: "approved" | "rejected") => {
     updateStatusMutation.mutate(

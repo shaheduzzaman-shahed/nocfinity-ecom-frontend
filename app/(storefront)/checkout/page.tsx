@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -16,6 +16,7 @@ import {
   ShoppingBag,
 } from "lucide-react";
 import { useAuthStore } from "@/stores/auth.store";
+import { useMounted } from "@/hooks/use-mounted";
 import {
   useCheckoutPreview,
   useProcessCheckout,
@@ -148,8 +149,9 @@ function CheckoutFormContent({ preview }: { preview: CheckoutPreviewData }) {
 
       // 4. Redirect to confirmation page
       router.push(`/orders/${order.id}/confirmation`);
-    } catch (err: any) {
-      setErrorMessage(err.message || "An error occurred while processing your order. Please try again.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "An error occurred while processing your order. Please try again.";
+      setErrorMessage(message);
       setIsProcessingPayment(false);
     }
   }, [
@@ -188,7 +190,7 @@ function CheckoutFormContent({ preview }: { preview: CheckoutPreviewData }) {
           isSubmitting={isProcessingPayment || processCheckoutMutation.isPending}
           errorMessage={errorMessage}
           onPlaceOrder={handlePlaceOrder}
-          canPlaceOrder={Boolean(activeAddressId || newAddressData)}
+          canPlaceOrder={Boolean((activeAddressId || newAddressData) && isCardComplete)}
         />
       </div>
     </div>
@@ -196,12 +198,8 @@ function CheckoutFormContent({ preview }: { preview: CheckoutPreviewData }) {
 }
 
 export default function CheckoutPage() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const stripePromise = useMemo(() => getStripePromise(), []);
 

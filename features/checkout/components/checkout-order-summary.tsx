@@ -1,14 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import {
   AlertCircle,
-  ArrowRight,
   Loader2,
   Lock,
   Package,
-  ShoppingBag,
-  Tag,
   TicketPercent,
 } from "lucide-react";
 import type { CartItemData } from "@/features/cart/types/cart.types";
@@ -54,7 +50,9 @@ export function CheckoutOrderSummary({
       {/* Items preview list */}
       <div className="max-h-72 overflow-y-auto space-y-3.5 pr-1 divide-y divide-border/60">
         {items.map((item) => {
-          const imageUrl = item.primary_image ?? (item as any).image_url;
+          const imageUrl =
+            item.primary_image ??
+            ("image_url" in item ? String((item as Record<string, unknown>).image_url) : null);
 
           return (
             <div key={item.id} className="flex gap-3.5 pt-3.5 first:pt-0">

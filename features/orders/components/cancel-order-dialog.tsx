@@ -15,24 +15,26 @@ interface CancelOrderDialogProps {
   onCancel: () => void;
 }
 
-export function CancelOrderDialog({
+export function CancelOrderDialog(props: CancelOrderDialogProps) {
+  if (!props.open || !props.order) return null;
+  return (
+    <CancelOrderDialogContent
+      key={props.order.id}
+      {...props}
+      order={props.order}
+    />
+  );
+}
+
+function CancelOrderDialogContent({
   order,
-  open,
   isPending,
   onConfirm,
   onCancel,
-}: CancelOrderDialogProps) {
+}: CancelOrderDialogProps & { order: Order }) {
   const [reason, setReason] = useState("");
 
   useEffect(() => {
-    if (!open) {
-      setReason("");
-    }
-  }, [open]);
-
-  useEffect(() => {
-    if (!open) return;
-
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !isPending) {
         onCancel();
@@ -41,9 +43,7 @@ export function CancelOrderDialog({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open, isPending, onCancel]);
-
-  if (!open || !order) return null;
+  }, [isPending, onCancel]);
 
   const isPaid = order.order_status === "paid";
 

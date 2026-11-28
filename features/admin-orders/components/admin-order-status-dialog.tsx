@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Loader2, AlertTriangle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,24 +27,33 @@ export function AdminOrderStatusDialog({
 }: AdminOrderStatusDialogProps) {
   const [note, setNote] = useState("");
 
-  useEffect(() => {
-    if (!open) {
-      setNote("");
-    }
-  }, [open]);
+  const handleCancel = useCallback(() => {
+    setNote("");
+    onCancel();
+  }, [onCancel]);
+
+  const handleConfirm = useCallback(() => {
+    if (!targetStatus) return;
+    onConfirm({
+      status: targetStatus,
+      note: note.trim() || undefined,
+      reason: note.trim() || undefined,
+    });
+    setNote("");
+  }, [note, onConfirm, targetStatus]);
 
   useEffect(() => {
     if (!open) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !isPending) {
-        onCancel();
+        handleCancel();
       }
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open, isPending, onCancel]);
+  }, [open, isPending, handleCancel]);
 
   if (!open || !order || !targetStatus) return null;
 
@@ -82,7 +91,7 @@ export function AdminOrderStatusDialog({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-2xs"
       role="presentation"
       onClick={() => {
-        if (!isPending) onCancel();
+        if (!isPending) handleCancel();
       }}
     >
       <div
@@ -143,7 +152,7 @@ export function AdminOrderStatusDialog({
           <Button
             type="button"
             variant="outline"
-            onClick={onCancel}
+            onClick={handleCancel}
             disabled={isPending}
           >
             Cancel
@@ -151,13 +160,7 @@ export function AdminOrderStatusDialog({
           <Button
             type="button"
             variant={isCancellation ? "destructive" : "default"}
-            onClick={() =>
-              onConfirm({
-                status: targetStatus,
-                note: note.trim() || undefined,
-                reason: note.trim() || undefined,
-              })
-            }
+            onClick={handleConfirm}
             disabled={isPending}
           >
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

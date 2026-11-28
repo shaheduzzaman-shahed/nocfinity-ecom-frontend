@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import {
@@ -17,6 +17,7 @@ import { useTheme } from "next-themes";
 import type { StorefrontCategory } from "../types/category.types";
 import { useAuthStore } from "@/stores/auth.store";
 import { useCart } from "@/features/cart/hooks/use-cart";
+import { useMounted } from "@/hooks/use-mounted";
 
 function categoryHref(slug: string): string {
   return `/categories/${slug}`;
@@ -38,17 +39,14 @@ export function StorefrontHeader({
 
   const { totalQuantity } = useCart();
   const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Close mobile drawer on route change
-  useEffect(() => {
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     setMobileOpen(false);
     setSearchOpen(false);
-  }, [pathname]);
+  }
 
   const isAuth = mounted && isAuthenticated;
   const activeUser = mounted ? user : null;

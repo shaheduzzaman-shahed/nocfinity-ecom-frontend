@@ -155,7 +155,7 @@ export default function CustomerOrdersPage() {
             No orders placed yet
           </h3>
           <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-            You haven't placed any orders yet. Discover our latest collections and find your style today.
+            You haven&apos;t placed any orders yet. Discover our latest collections and find your style today.
           </p>
           <Link
             href="/products"

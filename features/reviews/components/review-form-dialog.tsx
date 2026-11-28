@@ -17,38 +17,30 @@ interface ReviewFormDialogProps {
   onCancel: () => void;
 }
 
-export function ReviewFormDialog({
-  open,
+export function ReviewFormDialog(props: ReviewFormDialogProps) {
+  if (!props.open) return null;
+  return (
+    <ReviewFormDialogContent
+      key={props.initialReview?.id ?? "new"}
+      {...props}
+    />
+  );
+}
+
+function ReviewFormDialogContent({
   initialReview,
   productName,
   isPending,
   onSubmit,
   onCancel,
 }: ReviewFormDialogProps) {
-  const [rating, setRating] = useState<number>(5);
+  const [rating, setRating] = useState<number>(initialReview?.rating ?? 5);
   const [hoverRating, setHoverRating] = useState<number | null>(null);
-  const [title, setTitle] = useState("");
-  const [comment, setComment] = useState("");
+  const [title, setTitle] = useState(initialReview?.title ?? "");
+  const [comment, setComment] = useState(initialReview?.comment ?? "");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (open) {
-      if (initialReview) {
-        setRating(initialReview.rating);
-        setTitle(initialReview.title || "");
-        setComment(initialReview.comment || "");
-      } else {
-        setRating(5);
-        setTitle("");
-        setComment("");
-      }
-      setError(null);
-    }
-  }, [open, initialReview]);
-
-  useEffect(() => {
-    if (!open) return;
-
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !isPending) {
         onCancel();
@@ -57,9 +49,7 @@ export function ReviewFormDialog({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open, isPending, onCancel]);
-
-  if (!open) return null;
+  }, [isPending, onCancel]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

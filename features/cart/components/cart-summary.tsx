@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -12,6 +12,7 @@ import {
   TicketPercent,
   X,
 } from "lucide-react";
+import { useMounted } from "@/hooks/use-mounted";
 import type { AppliedCouponData, CartSummaryData } from "../types/cart.types";
 import { formatCurrency } from "@/lib/format";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -32,11 +33,7 @@ export function CartSummary({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   const applyCouponMutation = useApplyCoupon();
   const removeCouponMutation = useRemoveCoupon();
@@ -52,8 +49,10 @@ export function CartSummary({
         setCouponCode("");
         setErrorMessage(null);
       },
-      onError: (err: any) => {
-        setErrorMessage(err.message || "Invalid or ineligible coupon code.");
+      onError: (err: unknown) => {
+        const message =
+          (err as { message?: string })?.message || "Invalid or ineligible coupon code.";
+        setErrorMessage(message);
       },
     });
   };
